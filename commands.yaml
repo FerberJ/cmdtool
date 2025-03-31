@@ -1,0 +1,197 @@
+remoteUser: root
+remoteHost: "158.220.119.161"
+idRsaPath: "C:\\Users\\Jakob.Ferber\\.ssh\\id_rsa"
+variables:
+  frontend: "/opt/promosng/bin/app-service/modules/"
+  backend: "/opt/promosng/bin/batservice/"
+  orcabackend: "/opt/promosng/bin/orca-db/"
+  quasar: "C:\\Users\\Jakob.Ferber\\Documents\\Git\\batool"
+  executable: "C:\\Users\\Jakob.Ferber\\Downloads\\bat-service"
+  orcaexecutable: "C:\\Users\\Jakob.Ferber\\Downloads\\artifacts (8)\\bin\\linux-amd64\\orca-service"
+  spa: "{{quasar}}\\dist\\spa"
+  test: "{{input:test variable for lululu}}"
+cmds:
+  scp:
+    cmd: scp
+    type: exec
+    params: 2
+  scpFolder:
+    cmd: scp
+    type: exec
+    args:
+      - "-r"
+    params: 2
+  quasarBuild:
+    cmd: "cmd"
+    type: exec
+    args:
+      - "/C"
+      - "cd /d %s && quasar build"
+    params: 1
+  mv:
+    cmd: "mv"
+    type: ssh
+    args:
+      - "%s%s"
+      - "%s%s"
+    params: 4
+  chmodExecutable:
+    cmd: "chmod"
+    type: ssh
+    args:
+      - "+x"
+      - "%s%s"
+    params: 2
+  chmodFolder:
+    cmd: chmod
+    type: ssh
+    args:
+      - "-R"
+    params: 2
+  echo:
+    cmd: "cmd"
+    type: exec
+    args:
+      - "/C"
+      - "echo"
+    params: 1
+runCmds:
+  - cmd: echo
+    description: "Print Echo"
+    stopAfterFail: false
+    runIndex: 9
+    params:
+      - "stuffy"
+      - "stuffy"
+  - cmd: echo
+    description: "Print Echo"
+    stopAfterFail: false
+    runIndex: 9
+    params:
+      - "{{input:stuffy to do}}"
+  - cmd: quasarBuild
+    description: "Building Quasar"
+    stopAfterFail: true
+    runIndex: 9
+    params:
+      - "{{quasar}}"
+  - cmd: scpFolder
+    runIndex: 3
+    description: "Copy spa Folder to VM"
+    stopAfterFail: true
+    params:
+      - "{{spa}}"
+      - "{{remoteUser}}@{{remoteHost}}:{{frontend}}"
+  - cmd: mv
+    runIndex: 3
+    description: "Rename _batool to __batool"
+    stopAfterFail: true
+    params:
+      - "{{frontend}}"
+      - "_batool"
+      - "{{frontend}}"
+      - "__batool"
+  - cmd: mv
+    runIndex: 3
+    description: "Rename batool to _batool"
+    stopAfterFail: true
+    params:
+      - "{{frontend}}"
+      - "batool"
+      - "{{frontend}}"
+      - "_batool"
+  - cmd: mv
+    runIndex: 3
+    description: "Rename spa to batool"
+    stopAfterFail: true
+    params:
+      - "{{frontend}}"
+      - "spa"
+      - "{{frontend}}"
+      - "batool"
+  - cmd: chmodFolder
+    description: "Change Access batool"
+    stopAfterFail: true
+    runIndex: 3
+    params:
+      - "755"
+      - "{{frontend}}batool"
+
+
+  - cmd: scp
+    runIndex: 4
+    params:
+      - "{{orcaexecutable}}"
+      - "{{remoteUser}}@{{remoteHost}}:{{orcabackend}}"
+  - cmd: mv
+    runIndex: 4
+    params:
+      - "{{orcabackend}}"
+      - "_orca-db"
+      - "{{orcabackend}}"
+      - "__orca-db"
+  - cmd: mv
+    runIndex: 4
+    params:
+      - "{{orcabackend}}"
+      - "orca-db"
+      - "{{orcabackend}}"
+      - "_orca-db"
+  - cmd: mv
+    runIndex: 4
+    params:
+      - "{{orcabackend}}"
+      - "orca-service"
+      - "{{orcabackend}}"
+      - "orca-db"
+  - cmd: chmodExecutable
+    runIndex: 4
+    params:
+      - "{{orcabackend}}"
+      - "orca-db"
+
+
+
+
+
+  - cmd: scp
+    runIndex: 2
+    description: "Copy binary to VM"
+    stopAfterFail: true
+    params:
+      - "{{executable}}"
+      - "{{remoteUser}}@{{remoteHost}}:{{backend}}"
+  - cmd: mv
+    runIndex: 2
+    description: "Rename _batservice to __batservice"
+    stopAfterFail: true
+    params:
+      - "{{backend}}"
+      - "_batservice"
+      - "{{backend}}"
+      - "__batservice"
+  - cmd: mv
+    runIndex: 2
+    description: "Rename batservice to _batservice"
+    stopAfterFail: true
+    params:
+      - "{{backend}}"
+      - "batservice"
+      - "{{backend}}"
+      - "_batservice"
+  - cmd: mv
+    runIndex: 2
+    description: "Rename bat-service to batservice"
+    stopAfterFail: true
+    params:
+      - "{{backend}}"
+      - "bat-service"
+      - "{{backend}}"
+      - "batservice"
+  - cmd: chmodExecutable
+    runIndex: 2
+    description: "Change Access batservice"
+    stopAfterFail: true
+    params:
+      - "{{backend}}"
+      - "batservice"
