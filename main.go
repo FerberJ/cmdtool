@@ -3,6 +3,8 @@ package main
 import (
 	"cmd/tool/commands"
 	"cmd/tool/config"
+	"cmd/tool/models"
+	"cmd/tool/style"
 	"cmd/tool/utils"
 	"cmd/tool/view"
 	"fmt"
@@ -35,15 +37,15 @@ func main() {
 		remoteHost := config.ConfigFile.RemoteHost
 		idRsaPath := config.ConfigFile.IdRsaPath
 
-		p.Send(view.SshConnectionMsg{User: remoteUser, Address: remoteHost, Pending: true, Success: false})
+		p.Send(models.SshConnectionMsg{User: remoteUser, Address: remoteHost, Pending: true, Success: false})
 		client, err := sshConnect(remoteUser, remoteHost, "22", idRsaPath)
 		if err != nil {
-			p.Send(view.SshConnectionMsg{User: remoteUser, Address: remoteHost, Pending: false, Success: false, Error: err.Error()})
+			p.Send(models.SshConnectionMsg{User: remoteUser, Address: remoteHost, Pending: false, Success: false, Error: err.Error()})
 			p.Send(true)
 			return
 		}
 		defer client.Close()
-		p.Send(view.SshConnectionMsg{User: remoteUser, Address: remoteHost, Pending: false, Success: true})
+		p.Send(models.SshConnectionMsg{User: remoteUser, Address: remoteHost, Pending: false, Success: true})
 
 		for _, runCmd := range config.ConfigFile.RunCmds {
 			start := time.Now()
@@ -53,7 +55,7 @@ func main() {
 			}
 
 			startMsg := fmt.Sprintf("⏳ %v", runCmd.Description)
-			p.Send(view.ResultMsg{Text: startMsg, Duration: 0, StartText: true})
+			p.Send(models.ResultMsg{Text: startMsg, Duration: 0, StartText: true})
 			ticker := time.NewTicker(1 * time.Second)
 			processTime := time.Now()
 			quit := make(chan bool)
@@ -63,7 +65,7 @@ func main() {
 					case <-ticker.C:
 						elapsedTime := time.Since(processTime)
 						fullSeconds := elapsedTime.Truncate(time.Second)
-						p.Send(view.ResultMsg{Text: startMsg, Duration: fullSeconds, StartText: false})
+						p.Send(models.ResultMsg{Text: startMsg, Duration: fullSeconds, StartText: false})
 					case <-quit:
 						ticker.Stop()
 						return
@@ -83,9 +85,9 @@ func main() {
 
 				err := commands.ExecCmd(cmd.Cmd, args, cmd.Params, runCmd.Params, p)
 				if err != nil {
-					msg := fmt.Sprintf("❌ %v, error: %s", runCmd.Description, view.Error.Render(err.Error()))
+					msg := fmt.Sprintf("❌ %v, error: %s", runCmd.Description, style.Error.Render(err.Error()))
 					quit <- true
-					p.Send(view.ResultMsg{Text: msg, Duration: 0, StartText: false})
+					p.Send(models.ResultMsg{Text: msg, Duration: 0, StartText: false})
 					if runCmd.StopAfterFail {
 						p.Send(true)
 					}
@@ -96,9 +98,9 @@ func main() {
 			if cmd.Type == "ssh" {
 				err := commands.ExecSsh(client, cmd.Cmd, args, cmd.Params, runCmd.Params)
 				if err != nil {
-					msg := fmt.Sprintf("❌ %v, error: %s", runCmd.Description, view.Error.Render(err.Error()))
+					msg := fmt.Sprintf("❌ %v, error: %s", runCmd.Description, style.Error.Render(err.Error()))
 					quit <- true
-					p.Send(view.ResultMsg{Text: msg, Duration: 0, StartText: false})
+					p.Send(models.ResultMsg{Text: msg, Duration: 0, StartText: false})
 					if runCmd.StopAfterFail {
 						p.Send(true)
 					}
@@ -112,7 +114,7 @@ func main() {
 			duration := stop.Sub(start)
 			msg := fmt.Sprintf("✅ %v", runCmd.Description)
 
-			p.Send(view.ResultMsg{Text: msg, Duration: duration, StartText: false})
+			p.Send(models.ResultMsg{Text: msg, Duration: duration, StartText: false})
 		}
 
 		p.Send(true)
