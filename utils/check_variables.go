@@ -2,7 +2,6 @@ package utils
 
 import (
 	"cmd/tool/models"
-	"cmd/tool/view"
 	"fmt"
 	"regexp"
 	"strings"
@@ -28,7 +27,7 @@ func CheckVariables(value string, config models.ConfigFile, p *tea.Program) stri
 		wg.Add(1)
 
 		var input = ""
-		p.Send(view.Input{Input: &input, Msg: inMatches[0][2], Wg: &wg})
+		p.Send(models.InputMsg{Input: &input, Msg: inMatches[0][2], Wg: &wg})
 
 		wg.Wait()
 		value = input

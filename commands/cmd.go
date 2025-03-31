@@ -2,7 +2,7 @@ package commands
 
 import (
 	"bufio"
-	"cmd/tool/view"
+	"cmd/tool/models"
 	"fmt"
 	"os"
 	"os/exec"
@@ -44,7 +44,7 @@ func ExecCmd(cmd string, args []string, paramsCount uint, params []string, p *te
 		go func() {
 			scanner := bufio.NewScanner(stdoutPipe)
 			for scanner.Scan() {
-				p.Send(view.TerminalOut{Text: scanner.Text()})
+				p.Send(models.TerminalOut{Text: scanner.Text()})
 			}
 		}()
 
@@ -52,7 +52,7 @@ func ExecCmd(cmd string, args []string, paramsCount uint, params []string, p *te
 			scanner := bufio.NewScanner(stderrPipe)
 			for scanner.Scan() {
 				latestError += "" + scanner.Text()
-				p.Send(view.TerminalOut{Text: scanner.Text()})
+				p.Send(models.TerminalOut{Text: scanner.Text()})
 			}
 		}()
 
