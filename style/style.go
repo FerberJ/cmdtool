@@ -8,7 +8,6 @@ var (
 	LightGray = lipgloss.Color("241")
 	Red       = lipgloss.Color("9")
 	Green     = lipgloss.Color("10")
-	White     = lipgloss.Color("231")
 )
 
 var (
@@ -19,13 +18,8 @@ var (
 	DurationStyle   = DotStyle
 	AppStyle        = lipgloss.NewStyle()
 	Error           = lipgloss.NewStyle().Foreground(Red)
-	Title           = lipgloss.NewStyle().Bold(true).Background(Green).Width(60).Align(lipgloss.Center)
-)
-
-// Table
-var (
-	HeaderStyle  = lipgloss.NewStyle().Foreground(LightGray).Bold(true).Align(lipgloss.Center)
-	CellStyle    = lipgloss.NewStyle().Padding(0, 1).Width(26)
-	OddRowStyle  = CellStyle.Foreground(LightGray)
-	EvenRowStyle = CellStyle.Foreground(White)
+	Title           = lipgloss.NewStyle().Bold(true).Background(Green).Width(80).Align(lipgloss.Center)
+	Header          = lipgloss.NewStyle().Bold(true).Foreground(Green).Width(80).Align(lipgloss.Center)
+	InputVar        = DotStyle.Width(40)
+	InputResult     = lipgloss.NewStyle().Width(60)
 )

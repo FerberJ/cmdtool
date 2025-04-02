@@ -8,23 +8,20 @@ func spinnerView(m *model) string {
 	if len(m.addedVariables) > 0 {
 		s += style.Title.Render("Inputs:")
 		s += "\n\n"
-		s += lipTable(m)
+		s += inputVars(m)
 	}
 
 	s += "\n\n"
 
 	s += style.Title.Render("Commands:")
 	s += "\n\n"
-	if m.quitting {
-		s += "Programm quitting"
-	} else {
-		s += m.spinner.View() + " Running commands"
-	}
-
-	s += "\n\n"
 
 	for i := len(m.results) - consoleLength; i < len(m.results); i++ {
-		s += m.results[i].String() + "\n"
+		if m.results[i].Pending {
+			s += m.spinner.View() + " "
+		}
+		s += m.results[i].String()
+		s += "\n"
 	}
 
 	s += "\n\n"

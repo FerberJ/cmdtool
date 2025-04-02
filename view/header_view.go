@@ -1,7 +1,9 @@
 package view
 
+import "cmd/tool/style"
+
 func header() string {
-	return `
+	s := `
 	___                                          _ _____            _ 
    / __\___  _ __ ___  _ __ ___   __ _ _ __   __| /__   \___   ___ | |
   / /  / _ \| '_ ' _ \| '_ ' _ \ / _' | '_ \ / _' | / /\/ _ \ / _ \| |
@@ -9,4 +11,5 @@ func header() string {
  \____/\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|\__,_|\/   \___/ \___/|_|
 																	  
  `
+	return style.Header.Render(s)
 }

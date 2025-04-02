@@ -69,7 +69,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	case models.ResultMsg:
 		if !m.quitting {
-			if msg.StartText {
+			if msg.IsFirstMsg {
 				m.results = append(m.results, msg)
 			} else {
 				m.results[len(m.results)-1] = msg

@@ -13,15 +13,15 @@ type SshConnectionMsg struct {
 }
 
 func (s SshConnectionMsg) String() string {
-	str := s.User + "\t" + s.Address
+	var str string
 	if s.Pending {
-		str += "\t⏳"
+		str += style.InputVar.Render("⏳ " + s.User)
 	} else if s.Success {
-		str += "\t✅"
+		str += style.InputVar.Render("✅ " + s.User)
 	} else {
-		str += "\t❌"
-		str += "\n"
+		str += style.InputVar.Render("❌ " + s.User + " ")
 		str += style.Error.Render(s.Error)
 	}
+	str += style.InputResult.Render(s.Address)
 	return str
 }
