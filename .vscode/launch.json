@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}\\..\\main.go",
-            "args": ["-runIndexes=9"]
+            "args": ["-runIndexes=1", "-yamlFile=batoolFrontend.yaml"]
         }
     ]
 }
